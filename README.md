@@ -9,7 +9,7 @@ runtime patching on detected signatures and uses @subtee's PE Loader to get it i
 3. PE-Loaded into mem using @subtee POC (Added delays between mapping of DLLs-> Functions , Windows Defender thought it was to fast..)
 
 
-Credits to [@Mrtn9](https://twitter.com/Mrtn9) for his collab on this!
+Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
 
 [@harmj0y](https://twitter.com/harmj0y) is the primary author of the port that this repo is forked from.
 
