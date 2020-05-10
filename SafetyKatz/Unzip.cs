@@ -131,56 +131,12 @@ namespace Internals
 		/// <summary>
 		/// Provides data for the ExtractProgress event.
 		/// </summary>
-		public class FileProgressEventArgs : ProgressChangedEventArgs
-		{
-			/// <summary>
-			/// Initializes a new instance of the <see cref="FileProgressEventArgs"/> class.
-			/// </summary>
-			/// <param name="currentFile">The current file.</param>
-			/// <param name="totalFiles">The total files.</param>
-			/// <param name="fileName">Name of the file.</param>
-			public FileProgressEventArgs(int currentFile, int totalFiles, string fileName)
-				: base(totalFiles != 0 ? currentFile * 100 / totalFiles : 100, fileName)
-			{
-				CurrentFile = currentFile;
-				TotalFiles = totalFiles;
-				FileName = fileName;
-			}
-
-			/// <summary>
-			/// Gets the current file.
-			/// </summary>
-			public int CurrentFile { get; private set; }
-
-			/// <summary>
-			/// Gets the total files.
-			/// </summary>
-			public int TotalFiles { get; private set; }
-
-			/// <summary>
-			/// Gets the name of the file.
-			/// </summary>
-			public string FileName { get; private set; }
-		}
 
 		private const int EntrySignature = 0x02014B50;
 		private const int FileSignature = 0x04034b50;
 		private const int DirectorySignature = 0x06054B50;
 		private const int BufferSize = 16 * 1024;
 
-		/// <summary>
-		/// Occurs when a file or a directory is extracted from an archive.
-		/// </summary>
-		public event EventHandler<FileProgressEventArgs> ExtractProgress;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Unzip" /> class.
-		/// </summary>
-		/// <param name="fileName">Name of the file.</param>
-		public Unzip(string fileName)
-			: this(File.OpenRead(fileName))
-		{
-		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Unzip" /> class.
@@ -213,60 +169,6 @@ namespace Internals
 				Reader.Close();
 				Reader = null;
 			}
-		}
-
-		/// <summary>
-		/// Extracts the contents of the zip file to the given directory.
-		/// </summary>
-		/// <param name="directoryName">Name of the directory.</param>
-		public void ExtractToDirectory(string directoryName)
-		{
-			for (int index = 0; index < Entries.Length; index++)
-			{
-				var entry = Entries[index];
-
-				// create target directory for the file
-				var fileName = Path.Combine(directoryName, entry.Name);
-				var dirName = Path.GetDirectoryName(fileName);
-				Directory.CreateDirectory(dirName);
-
-				// save file if it is not only a directory
-				if (!entry.IsDirectory)
-				{
-					Extract(entry.Name, fileName);
-				}
-
-				var extractProgress = ExtractProgress;
-				if (extractProgress != null)
-				{
-					extractProgress(this, new FileProgressEventArgs(index + 1, Entries.Length, entry.Name));
-				}
-			}
-		}
-
-		/// <summary>
-		/// Extracts the specified file to the specified name.
-		/// </summary>
-		/// <param name="fileName">Name of the file in zip archive.</param>
-		/// <param name="outputFileName">Name of the output file.</param>
-		public void Extract(string fileName, string outputFileName)
-		{
-			var entry = GetEntry(fileName);
-
-			using (var outStream = File.Create(outputFileName))
-			{
-				Extract(entry, outStream);
-			}
-
-			var fileInfo = new FileInfo(outputFileName);
-			if (fileInfo.Length != entry.OriginalSize)
-			{
-				throw new InvalidDataException(string.Format(
-					"Corrupted archive: {0} has an uncompressed size {1} which does not match its expected size {2}",
-					outputFileName, fileInfo.Length, entry.OriginalSize));
-			}
-
-			File.SetLastWriteTime(outputFileName, entry.Timestamp);
 		}
 
 		private Entry GetEntry(string fileName)
