@@ -7,8 +7,8 @@
     <ProjectGuid>{8347E81B-89FC-42A9-B22C-F59A6A572DEC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SafetyKatz</RootNamespace>
-    <AssemblyName>SafetyKatz</AssemblyName>
+    <RootNamespace>BetterSafetyKatz</RootNamespace>
+    <AssemblyName>BetterSafetyKatz</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
