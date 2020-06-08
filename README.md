@@ -5,9 +5,8 @@ runtime patching on detected signatures and uses @subtee's PE Loader to get it i
 
 1. Gets the URL for the latest ZIP / PreCompiled Mimikatz binary directly from GitHub Repo
 2. Unzipped in memory, turned into HEX. Then strings/signatures detected by Windows Defender are replaced with random strings of the same size 
-    (Spent ~6 hours using https://github.com/matterpreter/DefenderCheck mapping signatures to replace)
+    (Used https://github.com/matterpreter/DefenderCheck to gather signatures detected)
 3. PE-Loaded into mem using @subtee POC (Added delays between mapping of DLLs-> Functions , Windows Defender thought it was to fast..)
-
 
 Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
 
@@ -17,7 +16,7 @@ BetterSafetyKatz is licensed under the BSD 3-Clause license.
 
 ## Usage
 
-    PS D:\Projects\SafetyKatz\SafetyKatz\bin\Debug> .\SafetyKatz.exe                                                      
+    PS D:\Projects\BetterSafetyKatz\BetterSafetyKatz\bin\Debug> .\BetterSafetyKatz.exe                                                      
 	
 	[+] Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
 	[+] Contacting gentilkiwi -> https://github.com/gentilkiwi/mimikatz/releases/download/2.2.0-20200502/mimikatz_trunk.zip
