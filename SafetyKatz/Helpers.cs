@@ -16,6 +16,12 @@ namespace BetterSafetyKatz
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+        public static int RandomNumber(int min, int max)
+        {
+            Random random = new Random();
+            return random.Next(min, max);
+        }
+
         public static byte[] StringToByteArray(string hex)
         {
             return Enumerable.Range(0, hex.Length)

