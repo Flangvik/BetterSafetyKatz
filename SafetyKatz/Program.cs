@@ -29,7 +29,7 @@ namespace BetterSafetyKatz
 
         static void Main(string[] args)
         {
-            Console.WriteLine("[+] Stolen from @harmj0y, @subtee and @gentilkiwi, repurposed by @Flangvik and @Mrtn9");
+            Console.WriteLine("[+] Stolen from @harmj0y, @TheRealWover, @cobbr_io and @gentilkiwi");
             if (!IsHighIntegrity())
             {
                 Console.WriteLine("[X] Not in high integrity, unable to grab a handle to lsass!");
