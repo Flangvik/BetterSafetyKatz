@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SharpSploit.Misc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-
+using System.Threading;
 using Execute = SharpSploit.Execution;
 
 namespace SharpSploit.Execution.ManualMap
@@ -153,6 +154,7 @@ namespace SharpSploit.Execution.ManualMap
                     {
                         try
                         {
+
                             IntPtr pPatch = (IntPtr)((UInt64)ModuleMemoryBase + ibr.VirtualAdress + RelocPatch);
                             if (RelocType == 0x3) // IMAGE_REL_BASED_HIGHLOW (x86)
                             {
@@ -235,6 +237,9 @@ namespace SharpSploit.Execution.ManualMap
 
                     // Check and / or load DLL
                     IntPtr hModule = DynamicInvoke.Generic.GetLoadedModuleAddress(DllName);
+                    Console.Write("\r[+] Slowly mapping {0}", DllName.PadRight(20,' '));
+                    Console.Write("\r");
+
                     if (hModule == IntPtr.Zero)
                     {
                         hModule = DynamicInvoke.Generic.LoadModuleFromDisk(DllName);
@@ -256,6 +261,10 @@ namespace SharpSploit.Execution.ManualMap
                             {
                                 break;
                             }
+
+
+                            //We need to slow this down to be able to bypass AV's
+                            Thread.Sleep(Helpers.RandomNumber(5, 20));
 
                             if (oft_itd.AddressOfData < 0x80000000) // !IMAGE_ORDINAL_FLAG32
                             {
@@ -289,11 +298,16 @@ namespace SharpSploit.Execution.ManualMap
                                 break;
                             }
 
+                            //We need to slow this down to be able to bypass AV's
+                            Thread.Sleep(Helpers.RandomNumber(5, 20));
+
                             if (oft_itd.AddressOfData < 0x8000000000000000) // !IMAGE_ORDINAL_FLAG64
                             {
                                 IntPtr pImpByName = (IntPtr)((UInt64)ModuleMemoryBase + oft_itd.AddressOfData + sizeof(UInt16));
                                 IntPtr pFunc = IntPtr.Zero;
                                 pFunc = DynamicInvoke.Generic.GetNativeExportAddress(hModule, Marshal.PtrToStringAnsi(pImpByName));
+
+                           
 
                                 // Write pointer
                                 Marshal.WriteInt64(ft_itd, pFunc.ToInt64());

