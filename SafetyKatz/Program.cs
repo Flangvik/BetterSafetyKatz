@@ -71,7 +71,7 @@ namespace BetterSafetyKatz
                     string latestReleases = webClient.DownloadString(Encoding.UTF8.GetString(Convert.FromBase64String("aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9nZW50aWxraXdpL21pbWlrYXR6L3JlbGVhc2VzL2xhdGVzdA==")));
 
                     //Regex out the latest url for the zip build of katz
-                    Regex urlRegex = new Regex(@"https:\/\/github.com\/([a-z\.-]*)\/([a-z\.-]*)\/releases\/download\/([0-9\.-]*)\/([a-z\.-]*)_trunk\.zip", RegexOptions.IgnoreCase);
+                    Regex urlRegex = new Regex(@"https:\/\/github.com\/([a-z\.-]*)\/([a-z\.-]*)\/releases\/download\/([0-9\.-]*)(fix)?\/([a-z\.-]*)_trunk\.zip", RegexOptions.IgnoreCase);
 
                     //Pull the latest release as a ZIP file
                     latestPath = urlRegex.Matches(latestReleases)[0].ToString();
